@@ -19,15 +19,13 @@ const InputSongs = () => {
 
             // set current song to first index
             contextApi.setCurrentSong(URL.createObjectURL(files[contextApi.index]));
-
-            // set initialized to true
         }
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <input ref={contextApi.inputRef} type="file" multiple accept='audio/mpeg' />
-            <button type="submit">Submit</button>
+            <input ref={contextApi.inputRef} type="file" multiple accept='audio/mpeg' disabled={contextApi.initialized} />
+            <button type="submit" disabled={contextApi.initialized}>Submit</button>
         </form>
     )
 }

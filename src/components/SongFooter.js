@@ -1,10 +1,9 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import pic from '../assets/images/smug.png';
-import song from '../assets/songs/song1.mp3';
 import Context from './ContextApi';
 import PlaybackButton from './subcomponents/PlaybackButton';
 import InputSongs from './InputSongs';
-import { BsPlay, BsPause, BsShuffle, BsFillVolumeOffFill, BsVolumeDownFill, BsFillVolumeUpFill } from 'react-icons/bs';
+import { BsPlay, BsPause, BsShuffle, BsFillVolumeUpFill } from 'react-icons/bs';
 import { MdSkipPrevious, MdSkipNext, MdOutlineRepeat, MdOutlineRepeatOne } from 'react-icons/md';
 
 const SongFooter = () => {
@@ -15,11 +14,8 @@ const SongFooter = () => {
     const [duration, setDuration] = useState(0);
     const player = useRef();
     const progress = useRef();
+    const volume = useRef();
     const contextApi = useContext(Context);
-
-    useEffect(() => {
-
-    }, [])
 
     const togglePlay = () => {
         const prevValue = isPlaying;
@@ -31,7 +27,7 @@ const SongFooter = () => {
         } else {
             player.current.pause();
         }
-        // console.log(player.current.duration);
+        console.log(contextApi.songs[contextApi.index].name);
     }
 
     const toggleShuffle = () => {
@@ -113,6 +109,12 @@ const SongFooter = () => {
 
         // reset play button
         setIsPlaying(false);
+
+        // set default volume value
+        volume.current.value = 100;
+
+        // initialize player
+        contextApi.setInitialized(true);
     }
 
     const onSeek = () => {
@@ -124,18 +126,22 @@ const SongFooter = () => {
         setElapsed(calcTime(currentTime));
     }
 
+    const onVolumeChange = () => {
+        player.current.volume = volume.current.value / 100;
+    }
+
     return (
         <footer className='flex flex-row justify-between'>
             <section className='flex flex-row flex-1 bg-slate-50'>
                 <img src={pic} alt="" className='w-20 h-full' />
                 <div className="flex flex-col justify-center px-4 w-full">
-                    <h3>Song Name</h3>
-                    <p className='font-bold'>Artist</p>
+                    <h3>{contextApi.initialized ? contextApi.songs[contextApi.index].name : "--"}</h3>
                 </div>
             </section>
 
             <section className='flex flex-col flex-1 basis-1/5 bg-slate-200 justify-center items-center gap-3'>
                 <audio ref={player} src={contextApi.currentSong} onCanPlayThrough={onLoad} onTimeUpdate={onPlaying} />
+
                 <div className="flex flex-row w-full justify-center gap-4">
                     <PlaybackButton icon={<BsShuffle size={20} />} clickFunc={toggleShuffle} />
                     <PlaybackButton icon={<MdSkipPrevious size={20} />} clickFunc={skipPrevious} />
@@ -152,16 +158,18 @@ const SongFooter = () => {
                     }
                     
                 </div>
-                <div className="flex flex-row">
-                    <p>{elapsed}</p>
-                    <input type="range" id='progress' ref={progress} onChange={onSeek} />
-                    <p>{duration}</p>
-                </div>                
+
+                <div className="flex flex-row justify-between gap-2 w-full px-8">
+                    <p>{elapsed === 0 ? "--" : elapsed}</p>
+                    <input ref={progress} type="range" id='progress' onChange={onSeek} disabled={!contextApi.initialized} className="basis-4/5" />
+                    <p>{duration === 0 ? "--" : duration}</p>
+                </div>  
             </section>
 
             <section className='flex flex-col justify-center items-center flex-1 bg-slate-400'>
-                <div>
-                    <input type="range" name="volume" id="volume" />
+                <div className='flex flex-row gap-2'>
+                    <BsFillVolumeUpFill size={20} />
+                    <input ref={volume} type="range" name="volume" id="volume" onChange={onVolumeChange} disabled={!contextApi.initialized} />
                 </div>
                 <InputSongs />
             </section>

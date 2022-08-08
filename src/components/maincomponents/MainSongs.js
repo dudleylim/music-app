@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
+import Context from '../ContextApi'
 
 const MainSongs = () => {
+    const contextApi = useContext(Context);
 
     return (
-        <div>MainSongs</div>
+        <>
+        <h1>My Music</h1>
+        <hr />
+        <section>
+            <ul>
+            </ul>
+        </section>
+        </>
     )
 }
 
