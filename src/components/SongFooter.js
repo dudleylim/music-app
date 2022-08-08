@@ -27,7 +27,7 @@ const SongFooter = () => {
         } else {
             player.current.pause();
         }
-        console.log(contextApi.songs[contextApi.index].name);
+        console.log(contextApi.songs);
     }
 
     const toggleShuffle = () => {

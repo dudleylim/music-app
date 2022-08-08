@@ -7,7 +7,7 @@ import { NavItemPlaylist, PlaylistItem } from './subcomponents/NavItem';
 
 const Header = () => {
     return (
-        <header className='flex flex-col overflow-y-auto'>
+        <header className='flex flex-col overflow-y-auto bg-gray-100'>
             <div>
                 <button className='p-4 hover:bg-slate-400'><AiOutlineMenu size={28}/></button>
             </div>
@@ -18,7 +18,7 @@ const Header = () => {
                 <button><AiOutlineSearch  size={25}/></button>
             </div>
 
-            <nav className='flex flex-col overflow-y-auto bg-white h-full'>
+            <nav className='flex flex-col overflow-y-auto h-full'>
                 <NavItem linkTo={'/'} icon={<BsMusicNoteBeamed size={25} />} body={'My music'} />
                 <NavItem linkTo={'/'} icon={<BsSoundwave size={25} />} body={'Now playing'} />
                 <hr />

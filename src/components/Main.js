@@ -6,7 +6,7 @@ import MainPlaylistSpecific from './maincomponents/MainPlaylistSpecific';
 
 const Main = () => {
     return (
-        <main>
+        <main className='bg-slate-50'>
             <Routes>
                 <Route path='/' exact element={<MainSongs />} />
                 <Route path='/playlists' exact element={<MainPlaylists />} />
