@@ -10,7 +10,10 @@ const InputSongs = () => {
         if (files.length === 0) {
             console.log('No files detected');
         } else {
-            console.log(files)
+            console.log(files);
+            // reset index to 0
+            contextApi.setIndex(0);
+
             // set songs to inputted files
             contextApi.setSongs(files);
 
