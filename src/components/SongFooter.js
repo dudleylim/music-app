@@ -21,7 +21,7 @@ const SongFooter = () => {
     const togglePlay = () => {
         const prevValue = isPlaying;
         console.log(contextApi.currentSong);
-        console.log(contextApi.songs[contextApi.index]);
+        console.log(contextApi.songQueue[contextApi.index]);
         setIsPlaying(!prevValue);
         if (!prevValue) {
             player.current.play();
@@ -48,7 +48,7 @@ const SongFooter = () => {
     const skipNext = () => {
         const prevIndex = contextApi.index;
         let newIndex;
-        if (prevIndex === contextApi.songs.length - 1) {
+        if (prevIndex === Object.keys(contextApi.songQueue).length - 1) {
             newIndex = 0;
             contextApi.setIndex(newIndex);
         } else {
@@ -56,7 +56,7 @@ const SongFooter = () => {
             contextApi.setIndex(newIndex);
         }
         try {
-            contextApi.setCurrentSong(URL.createObjectURL(contextApi.songs[newIndex]))
+            contextApi.setCurrentSong(URL.createObjectURL(contextApi.songQueue[newIndex]))
             console.log(newIndex)
         } catch (err) {
             console.log(err);
@@ -67,14 +67,14 @@ const SongFooter = () => {
         const prevIndex = contextApi.index;
         let newIndex;
         if (prevIndex === 0) {
-            newIndex = contextApi.songs.length - 1
+            newIndex = Object.keys(contextApi.songQueue).length - 1;
             contextApi.setIndex(newIndex);
         } else {
             newIndex = prevIndex - 1;
             contextApi.setIndex(newIndex);
         }
         try {
-            contextApi.setCurrentSong(URL.createObjectURL(contextApi.songs[newIndex]))
+            contextApi.setCurrentSong(URL.createObjectURL(contextApi.songQueue[newIndex]))
             console.log(newIndex)
         } catch (err) {
             console.log(err);
@@ -148,7 +148,7 @@ const SongFooter = () => {
             <section className='flex flex-row flex-1 bg-slate-50'>
                 <img src={pic} alt="" className='w-20 h-full' />
                 <div className="flex flex-col justify-center px-4 w-full">
-                    <h3>{contextApi.initialized ? contextApi.songs[contextApi.index].name : "--"}</h3>
+                    <h3>{contextApi.initialized ? contextApi.songQueue[contextApi.index].name : "--"}</h3>
                 </div>
             </section>
 

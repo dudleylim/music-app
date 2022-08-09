@@ -16,6 +16,8 @@ export const ContextApi = ({children}) => {
     // shuffle function
     const shuffleSong = () => {
         const tempKeys = Object.keys(songs);
+        let prevIndex = index;
+        let switched = false;
         
         // https://bost.ocks.org/mike/shuffle/
         let m = tempKeys.length, t, i;
@@ -28,11 +30,17 @@ export const ContextApi = ({children}) => {
         }
         console.log(tempKeys);
 
+        console.log("Previous index: ", prevIndex);
         const tempSongs = {};
         for (let i = 0; i < tempKeys.length; i++) {
+            if (String(prevIndex) === tempKeys[i] && !switched) {
+                prevIndex = i;
+            }
             tempSongs[i] = songs[tempKeys[i]];
         }
         // tempSongs['length'] = tempKeys.length;
+        console.log("New index: ", prevIndex);
+        setIndex(prevIndex);
         setSongQueue(tempSongs);
         console.log(tempSongs);
     }
