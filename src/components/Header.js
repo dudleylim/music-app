@@ -20,7 +20,7 @@ const Header = () => {
 
             <nav className='flex flex-col overflow-y-auto h-full'>
                 <NavItem linkTo={'/'} icon={<BsMusicNoteBeamed size={25} />} body={'My music'} />
-                <NavItem linkTo={'/'} icon={<BsSoundwave size={25} />} body={'Now playing'} />
+                <NavItem linkTo={'/nowplaying'} icon={<BsSoundwave size={25} />} body={'Now playing'} />
                 <hr />
                 <NavItemPlaylist linkTo={'/playlists'} icon={<CgPlayList size={25} />} body={'Playlists'} addIcon={<AiOutlinePlus size={25} />}  />
                 <PlaylistItem body={'1'} />

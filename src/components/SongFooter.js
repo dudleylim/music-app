@@ -33,6 +33,11 @@ const SongFooter = () => {
     const toggleShuffle = () => {
         const prevValue = isShuffling;
         setIsShuffling(!prevValue);
+        if (prevValue === false) {
+            contextApi.shuffleSong();
+        } else {
+            contextApi.sortSong();
+        }
     }
 
     const toggleRepeat = () => {

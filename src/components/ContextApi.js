@@ -13,6 +13,33 @@ export const ContextApi = ({children}) => {
     const [isLoading, setIsLoading] = useState(true);
     const inputRef = useRef(null);
 
+    // shuffle function
+    const shuffleSong = () => {
+        const tempKeys = Object.keys(songs);
+        
+        // https://bost.ocks.org/mike/shuffle/
+        let m = tempKeys.length, t, i;
+        while (m) {
+            i = Math.floor(Math.random() * m--);
+
+            t = tempKeys[m];
+            tempKeys[m] = tempKeys[i];
+            tempKeys[i] = t;
+        }
+        console.log(tempKeys);
+
+        const tempSongs = {};
+        for (let i = 0; i < tempKeys.length; i++) {
+            tempSongs[i] = songs[tempKeys[i]];
+        }
+        // tempSongs['length'] = tempKeys.length;
+        setSongQueue(tempSongs);
+        console.log(tempSongs);
+    }
+    const sortSong = () => {
+        setSongQueue(songs);
+    }
+
     useEffect(() => {
         setSongQueue(songs);
         setIsLoading(false);
@@ -30,7 +57,8 @@ export const ContextApi = ({children}) => {
         setSongQueue,
         setCurrentSong,
         setIndex,
-        setInitialized
+        setInitialized,
+        shuffleSong, sortSong
     }
 
     // return
