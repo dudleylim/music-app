@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import pic from '../assets/images/smug.png';
 import Context from './ContextApi';
 import PlaybackButton from './subcomponents/PlaybackButton';
@@ -17,17 +17,17 @@ const SongFooter = () => {
     const volume = useRef();
     const contextApi = useContext(Context);
 
+    // functions
     const togglePlay = () => {
         const prevValue = isPlaying;
         console.log(contextApi.currentSong);
-        console.log(contextApi.songs);
+        console.log(contextApi.songs[contextApi.index]);
         setIsPlaying(!prevValue);
         if (!prevValue) {
             player.current.play();
         } else {
             player.current.pause();
         }
-        console.log(contextApi.songs);
     }
 
     const toggleShuffle = () => {
@@ -52,7 +52,6 @@ const SongFooter = () => {
         }
         try {
             contextApi.setCurrentSong(URL.createObjectURL(contextApi.songs[newIndex]))
-            setIsPlaying(false);
             console.log(newIndex)
         } catch (err) {
             console.log(err);
@@ -71,7 +70,6 @@ const SongFooter = () => {
         }
         try {
             contextApi.setCurrentSong(URL.createObjectURL(contextApi.songs[newIndex]))
-            setIsPlaying(false);
             console.log(newIndex)
         } catch (err) {
             console.log(err);
@@ -96,6 +94,11 @@ const SongFooter = () => {
 
         // update progress bar
         progress.current.value = player.current.currentTime;
+
+        // autoplay next song if current song finishes
+        if (player.current.currentTime === player.current.duration) {
+            skipNext();
+        }
     }
 
     // fires when audio player is able to play through the whole song
@@ -115,6 +118,11 @@ const SongFooter = () => {
 
         // initialize player
         contextApi.setInitialized(true);
+
+        if (isPlaying) {
+            setIsPlaying(true);
+            player.current.play();
+        }
     }
 
     const onSeek = () => {
@@ -140,7 +148,7 @@ const SongFooter = () => {
             </section>
 
             <section className='flex flex-col flex-1 basis-1/5 bg-slate-200 justify-center items-center gap-3'>
-                <audio ref={player} src={contextApi.currentSong} onCanPlayThrough={onLoad} onTimeUpdate={onPlaying} />
+                <audio ref={player} src={contextApi.currentSong} onCanPlayThrough={onLoad} onTimeUpdate={onPlaying} onSeeked={() => {togglePlay()}} />
 
                 <div className="flex flex-row w-full justify-center gap-4">
                     <PlaybackButton icon={<BsShuffle size={20} />} clickFunc={toggleShuffle} />
