@@ -8,7 +8,8 @@ import { MdSkipPrevious, MdSkipNext, MdOutlineRepeat, MdOutlineRepeatOne } from 
 
 const SongFooter = () => {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isRepeating, setIsRepeating] = useState(false);
+    const [isRepeating, setIsRepeating] = useState(false); // repeating is playlist playing from the start after last song
+    const [isLooping, setIsLooping] = useState(false); // looping is looping the same song after it is finished
     const [isShuffling, setIsShuffling] = useState(false);
     const [elapsed, setElapsed] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -41,8 +42,17 @@ const SongFooter = () => {
     }
 
     const toggleRepeat = () => {
-        const prevValue = isRepeating;
-        setIsRepeating(!prevValue);
+        const prevRepeating = isRepeating;
+        const prevLooping = isLooping;
+        if (!prevRepeating && !prevLooping) {
+            setIsRepeating(!prevRepeating);
+        } else if (prevRepeating && !prevLooping) {
+            setIsRepeating(!prevRepeating);
+            setIsLooping(!prevLooping);
+        } else {
+            setIsRepeating(false);
+            setIsLooping(false);
+        }
     }
 
     const skipNext = () => {
@@ -101,8 +111,9 @@ const SongFooter = () => {
         progress.current.value = player.current.currentTime;
 
         // autoplay next song if current song finishes
+        // condition: if looping, set currentTime instead to start of song 
         if (player.current.currentTime === player.current.duration) {
-            skipNext();
+            isLooping ? player.current.currentTime = 0 : skipNext();
         }
     }
 
@@ -124,7 +135,7 @@ const SongFooter = () => {
         // initialize player
         contextApi.setInitialized(true);
 
-        if (isPlaying) {
+        if (isPlaying && isRepeating) {
             setIsPlaying(true);
             player.current.play();
         }
@@ -137,6 +148,7 @@ const SongFooter = () => {
         player.current.currentTime = progress.current.value;
         const currentTime = player.current.currentTime;
         setElapsed(calcTime(currentTime));
+        console.log(isPlaying);
     }
 
     const onVolumeChange = () => {
@@ -153,10 +165,10 @@ const SongFooter = () => {
             </section>
 
             <section className='flex flex-col flex-1 basis-1/5 bg-slate-200 justify-center items-center gap-3'>
-                <audio ref={player} src={contextApi.currentSong} onCanPlayThrough={onLoad} onTimeUpdate={onPlaying} onSeeked={() => {togglePlay()}} />
+                <audio ref={player} src={contextApi.currentSong} onCanPlayThrough={onLoad} onTimeUpdate={onPlaying} />
 
                 <div className="flex flex-row w-full justify-center gap-4">
-                    <PlaybackButton icon={<BsShuffle size={20} />} clickFunc={toggleShuffle} />
+                    <PlaybackButton icon={<BsShuffle size={20} />} clickFunc={toggleShuffle} activated={isShuffling} />
                     <PlaybackButton icon={<MdSkipPrevious size={20} />} clickFunc={skipPrevious} />
                     {isPlaying ? 
                     <PlaybackButton icon={<BsPause size={30}/>} clickFunc={togglePlay} />
@@ -164,10 +176,10 @@ const SongFooter = () => {
                     <PlaybackButton icon={<BsPlay size={30}/>} clickFunc={togglePlay} />
                     }
                     <PlaybackButton icon={<MdSkipNext size={20}/>} clickFunc={skipNext} />
-                    {isRepeating ?
-                    <PlaybackButton icon={<MdOutlineRepeatOne size={20}/>} clickFunc={toggleRepeat} />
+                    {isLooping ?
+                    <PlaybackButton icon={<MdOutlineRepeatOne size={20}/>} clickFunc={toggleRepeat} activated={isLooping} />
                     :
-                    <PlaybackButton icon={<MdOutlineRepeat size={20}/>} clickFunc={toggleRepeat} />
+                    <PlaybackButton icon={<MdOutlineRepeat size={20}/>} clickFunc={toggleRepeat} activated={isRepeating} />
                     }
                     
                 </div>

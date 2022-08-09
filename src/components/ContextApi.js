@@ -35,6 +35,7 @@ export const ContextApi = ({children}) => {
         for (let i = 0; i < tempKeys.length; i++) {
             if (String(prevIndex) === tempKeys[i] && !switched) {
                 prevIndex = i;
+                switched = true;
             }
             tempSongs[i] = songs[tempKeys[i]];
         }
