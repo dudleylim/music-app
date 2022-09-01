@@ -13,6 +13,7 @@ const SongFooter = () => {
     const [isShuffling, setIsShuffling] = useState(false);
     const [elapsed, setElapsed] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [volumeAmount, setVolumeAmount] = useState(0);
     const player = useRef();
     const progress = useRef();
     const volume = useRef();
@@ -29,6 +30,12 @@ const SongFooter = () => {
         } else {
             player.current.pause();
         }
+    }
+    const forcePlay = () => {
+        player.current.play();
+        setTimeout(() => {
+            setIsPlaying(true);            
+        }, 50);
     }
 
     const toggleShuffle = () => {
@@ -113,7 +120,12 @@ const SongFooter = () => {
         // autoplay next song if current song finishes
         // condition: if looping, set currentTime instead to start of song 
         if (player.current.currentTime === player.current.duration) {
-            isLooping ? player.current.currentTime = 0 : skipNext();
+            if (isLooping) {
+                player.current.currentTime = 0.1;
+                forcePlay();
+            } else {
+                skipNext();
+            }
         }
     }
 
@@ -136,8 +148,7 @@ const SongFooter = () => {
         contextApi.setInitialized(true);
 
         if (isPlaying && isRepeating) {
-            setIsPlaying(true);
-            player.current.play();
+            forcePlay();
         }
     }
 
@@ -151,8 +162,18 @@ const SongFooter = () => {
         console.log(isPlaying);
     }
 
+    const changeSht = () => {
+        player.current.currentTime = player.current.duration / 2;
+        setElapsed(calcTime(player.current.currentTime));
+        if (isPlaying) {
+            forcePlay();
+        }
+    }
+
     const onVolumeChange = () => {
+        // volume.current.value = player.current.volume;
         player.current.volume = volume.current.value / 100;
+        setVolumeAmount(player.current.volume);
     }
 
     return (
@@ -181,7 +202,7 @@ const SongFooter = () => {
                     :
                     <PlaybackButton icon={<MdOutlineRepeat size={20}/>} clickFunc={toggleRepeat} activated={isRepeating} />
                     }
-                    
+                    <PlaybackButton icon={<MdOutlineRepeat size={20}/>} clickFunc={changeSht} />
                 </div>
 
                 <div className="flex flex-row justify-between gap-2 w-full px-8">
